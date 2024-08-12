@@ -11,6 +11,7 @@ typedef struct node
     struct node *left;
     struct node *right;
     bool mark = false;
+    bool seen = false;
 
 } NODE;
 
@@ -167,8 +168,47 @@ void consolidate(NODE *H_min)
     }
 }
 
+//searching required element
+NODE* search(NODE* temp,int x)
+{
+    NODE* temp1=temp;
+     NODE* temp2=temp;
+    NODE* temp3=NULL;
+    temp2->seen=true;
+    
+    if(temp2->data==x)
+        return temp2;
+    else if(temp2->degree !=0)
+    {
+        /*temp3= */ search(temp2->child,x);
+    }
+  /*  else
+        return 0; */
+//temp1=circular(temp2,x);
+    if(temp2->right->seen == false)
+    {
+       /* temp4=*/search(temp2->right,x);
+    }
+    else
+    {
+        if(temp2->right->seen == true && temp2->parent->right->seen == false)
+            search(temp2->parent->right);
+        else
+            return;
+    }
+        
+}
+
 //decrease key function
-void dec_key(NODE* H_min, NODE* x,int y)
+void dec_key(NODE* H_min, int x,int y)
+{
+    NODE* t=search( H-min, x);
+    
+}
+
+
+
+
 int main()
 {
     // We will create a heap and insert 3 nodes into it
