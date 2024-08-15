@@ -194,12 +194,64 @@ NODE* search(NODE* temp,int x)
         
 }
 
-//decrease key function
-void dec_key(NODE* H_min, int x,int y)
+//cut function used in decrease key
+void cut(NODE* H_min, NODE* x, NODE* y)
 {
-    NODE* t=search( H-min, x);
-    
+    //removing node x from the parent y
+    x->left->right=x->right;
+    x->right->left=x->left;
+    x->right=x->left=x;
+    x->parent=NULL;
+    y->degree=(y->degree)-1;
+    //adding x to root list nodes
+     x->right = H_min;
+        x->left = H_min->left;
+        H_min->left->right = x;
+        H_min->left = x;
+
+    x->mark=false;
 }
+
+//cascading cut function used in decrease key
+void cascading_cut(NODE* H_min, NODE* y)
+{
+    NODE* z;
+    z=y->parent;
+   if(z!=NULL)
+   {
+       if(y->mark==false)
+           y->mark=true;
+       else
+           cut(H_min,y,z);
+           cascading_cut(H_min,z);
+   }   
+}
+
+//decrease key function
+void dec_key(NODE* H_min, int x,int k)
+{
+    NODE* t=NULL;
+    t=search( H-min, x);
+    if(t==NULL)
+        cout<<"node doesn't exist"<<endl;
+
+    if(k>x->data)
+    {
+        cout<<"new key greater than older one"<<endl;
+        return ;
+    }
+    x->data=k;
+    NODE* y=NULL;
+    y=x->parent;
+
+    if(y!=NULL && x->data < y->data)
+    {
+        cut(H_min,x,y);
+        cascading_cut(H_min,y);
+    }
+    if (x->data < H_min->data)
+            H_min = x;    
+}            
 
 
 
