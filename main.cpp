@@ -177,7 +177,7 @@ NODE *Fib_heap_extract_min()
                 H_min->left = z;
                 z->parent = NULL;
                 z = y->right;
-            } while (x != z);
+            } while (x != z && z != NULL);
         }
     }
 
@@ -308,7 +308,13 @@ void dec_key(int x, int k)
     if (t->data < H_min->data)
         H_min = t;
 }
-
+void delete_key(int x)
+{
+    dec_key(x, INT_MIN);
+    printTree(H_min);
+    // Fib_heap_extract_min();
+    return;
+}
 int main()
 {
     fstream info("input.txt", ios_base::in);
@@ -320,11 +326,18 @@ int main()
     }
     // Fib_heap_print();
     printTree(H_min);
+    cout << endl;
     Fib_heap_find_min();
     Fib_heap_extract_min();
-    Fib_heap_print();
-    dec_key(34, 78);
     printTree(H_min);
+    cout << endl;
+    dec_key(34, 30);
+    printTree(H_min);
+    cout << endl;
+    delete_key(6);
+    printTree(H_min);
+    cout << endl;
+    Fib_heap_extract_min();
 
     NODE *val = search(H_min, 25);
     if (val == NULL)
