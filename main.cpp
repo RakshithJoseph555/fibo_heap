@@ -30,7 +30,7 @@ NODE *get_list_node(void)
 }
 
 /*inserting a node into fibonacci heap*/
-void Fib_heap_insert(NODE *H_min, NODE *x) // x is pointer to new node
+void Fib_heap_insert(NODE *x) // x is pointer to new node
 {
     x->degree = 0;
     x->parent = NULL;
@@ -51,7 +51,7 @@ void Fib_heap_insert(NODE *H_min, NODE *x) // x is pointer to new node
 }
 
 // finding minimum element in fibonacci heaps
-void Fib_heap_find_min(NODE *H_min)
+void Fib_heap_find_min()
 {
     if (H_min != NULL)
         cout << "Minimum element present is:" << H_min->data << endl;
@@ -114,7 +114,7 @@ void Fib_heap_link(NODE *y, NODE *x)
 }
 
 // consolidate function
-void consolidate(NODE *H_min)
+void consolidate()
 {
     int n = log(H_no) / log(2);
     NODE *a[n + 1];
@@ -195,7 +195,7 @@ NODE* search(NODE* temp,int x)
 }
 
 //cut function used in decrease key
-void cut(NODE* H_min, NODE* x, NODE* y)
+void cut(NODE* x, NODE* y)
 {
     //removing node x from the parent y
     x->left->right=x->right;
@@ -213,7 +213,7 @@ void cut(NODE* H_min, NODE* x, NODE* y)
 }
 
 //cascading cut function used in decrease key
-void cascading_cut(NODE* H_min, NODE* y)
+void cascading_cut(NODE* y)
 {
     NODE* z;
     z=y->parent;
@@ -222,13 +222,13 @@ void cascading_cut(NODE* H_min, NODE* y)
        if(y->mark==false)
            y->mark=true;
        else
-           cut(H_min,y,z);
-           cascading_cut(H_min,z);
+           cut(y,z);
+           cascading_cut(z);
    }   
 }
 
 //decrease key function
-void dec_key(NODE* H_min, int x,int k)
+void dec_key(int x,int k)
 {
     NODE* t=NULL;
     t=search( H-min, x);
