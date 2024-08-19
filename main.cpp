@@ -258,26 +258,37 @@ void dec_key(int x,int k)
 
 int main()
 {
-    // We will create a heap and insert 3 nodes into it
-    cout << "Creating an initial heap" << endl;
-    NODE *x = get_list_node();
-    // Fib_heap_insert(H_min,get_list_node());
-    // Fib_heap_insert(H_min, get_list_node());
-    // Fib_heap_insert(H_min, get_list_node());
+    fstream info("input.txt", ios_base::in);
+    int n;
 
-    // cout << "Extracting min" << endl;
-    // Extract_min();
-    // display();
+    while (info >> n)
+    {
+        Fib_heap_insert(get_list_node(n));
+    }
+    // Fib_heap_print();
+    printTree(H_min);
+    cout << endl;
+    Fib_heap_find_min();
+    Fib_heap_extract_min();
+    printTree(H_min);
+    cout << endl;
+    dec_key(34, 30);
+    printTree(H_min);
+    cout << endl;
+    delete_key(6);
+    printTree(H_min);
+    cout << endl;
+    Fib_heap_extract_min();
 
-    // // Now we will decrease the value of node '8' to '7'
-    // cout << "Decrease value of 8 to 7" << endl;
-    // Find(H_min, 8, 7);
-    // display();
-
-    // // Now we will delete the node '7'
-    // cout << "Delete the node 7" << endl;
-    // Deletion(7);
-    // display();
+    NODE *val = search(H_min, 25);
+    if (val == NULL)
+    {
+        cout << "Not found" << endl;
+    }
+    else
+    {
+        cout << val->data << endl;
+    }
 
     return 0;
 }
