@@ -33,7 +33,7 @@ void Fib_heap_print()
     NODE *temp = H_min;
     if (temp == NULL)
     {
-        cout << "The heap is empty!!!";
+        cout << "The heap is empty2!!!";
     }
     else
     {
@@ -51,20 +51,24 @@ void Fib_heap_print()
 // linking same degree trees to nodes . here removing y from root list and making child of x
 void Fib_heap_link(NODE *y, NODE *x)
 {
-    y->left->right = y->right;
-    y->right->left = y->left;
+    (y->left)->right = y->right;
+    (y->right)->left = y->left;
+    // if (x->right == y)
+    // {
+    //     H_min = x;
+    // }
     y->left = y->right = y;
     y->parent = x;
 
     if (x->child == NULL)
         x->child = y;
-    else
-    {
-        y->right = x->child;
-        y->left = x->child->left;
-        x->child->left->right = y;
-        x->child->left = y;
-    }
+
+    y->right = x->child;
+    y->left = (x->child)->left;
+    ((x->child)->left)->right = y;
+    (x->child)->left = y;
+    if (y->data < ((x->child)->data))
+        x->child = y;
     x->degree = x->degree + 1;
     y->mark = false;
 }
@@ -81,14 +85,36 @@ void Fib_heap_insert(NODE *x) // x is pointer to new node
     {
         x->right = H_min;
         x->left = H_min->left;
-        H_min->left->right = x;
+        (H_min->left)->right = x;
         H_min->left = x;
         if (x->data < H_min->data)
             H_min = x;
     }
     H_no = H_no + 1;
 }
+void printTree(NODE *t)
+{
+    if (t == NULL)
+    {
+        return;
+    }
 
+    NODE *temp = t;
+    do
+    {
+
+        cout << "-> " << temp->data;
+        if (temp->child != NULL)
+        {
+            cout << "( ";
+            printTree(temp->child);
+            cout << " )";
+        }
+
+        temp = temp->right;
+
+    } while (temp != NULL && temp != t);
+}
 // finding minimum element in fibonacci heaps
 void Fib_heap_find_min()
 {
@@ -98,10 +124,10 @@ void Fib_heap_find_min()
         cout << "No element present" << endl;
 }
 
-// consolidate function
 void consolidate()
 {
     int n = log(H_no) / log(2);
+    // cout<<n<<endl;
     NODE *a[n + 1];
     for (int i = 0; i <= n; i++)
     {
@@ -110,18 +136,32 @@ void consolidate()
     NODE *temp = H_min;
     NODE *temp1 = temp;
     temp = temp->right;
-    while (temp != H_min)
+    // while (temp != H_min)
+    do
     {
+        // cout << "hi" << endl;
         int deg = temp1->degree;
+        // cout << "hi deg" << deg << endl;
         while (a[deg] != NULL)
         {
+            // cout << "hi1" << endl;
             NODE *temp2 = a[deg];
+            // cout << temp2->data << "temp 2 data" << endl;
             if (temp1->data > temp2->data)
             {
                 NODE *temp3 = temp1;
                 temp1 = temp2;
                 temp2 = temp3;
             }
+            if (temp2 == H_min)
+            {
+                // cout << "jsjdhfkahaiufh" << endl;
+                H_min = temp2->right;
+            }
+
+            if (temp2 == temp)
+                temp = temp->right;
+
             Fib_heap_link(temp2, temp1);
             a[deg] = NULL;
             deg++;
@@ -129,7 +169,8 @@ void consolidate()
         a[deg] = temp1;
         temp1 = temp;
         temp = temp->right;
-    }
+    } while (temp1 != H_min);
+    H_min = NULL;
     for (int i = 0; i <= n; i++)
     {
         if (a[i] != NULL)
@@ -152,42 +193,52 @@ void consolidate()
         }
     }
 }
-
 // Extracting the minimum element
 NODE *Fib_heap_extract_min()
 {
     NODE *temp = H_min;
     if (temp == NULL)
     {
-        cout << "The heap is empty!!" << endl;
-    }
-    else
-    {
-
-        if (temp->child != NULL)
-        {
-            NODE *x = temp->child;
-            NODE *y = x;
-            NODE *z = NULL;
-            do
-            {
-                z->right = H_min;
-                x->left = H_min->left;
-                H_min->left->right = z;
-                H_min->left = z;
-                z->parent = NULL;
-                z = y->right;
-            } while (x != z && z != NULL);
-        }
+        cout << "The heap is empty3!!" << endl;
+        return NULL;
     }
 
-    temp->left->right = temp->right;
-    temp->right->left = temp->left;
-    if (temp == temp->right || temp == NULL)
+    NODE *y = temp;
+
+    if (temp == temp->right && temp->child == NULL)
         H_min = NULL;
     else
     {
+        // cout << "start of extract min" << endl;
+        // printTree(H_min);
+        cout << endl;
+        if (temp->child != NULL)
+        {
+            NODE *x = temp->child;
+            NODE *z = x;
+            do
+            {
+                y = z->right;
+                (H_min->left)->right = z;
+                z->right = H_min;
+                z->left = H_min->left;
+
+                H_min->left = z;
+                if (z->data < H_min->data)
+                {
+                    H_min = z;
+                }
+                z->parent = NULL;
+                z = y;
+            } while (y != x);
+        }
         H_min = temp->right;
+        (temp->left)->right = temp->right;
+        (temp->right)->left = temp->left;
+        temp->child = NULL;
+        // cout << "consolidate called h_min is: " << H_min->data << endl;
+        // printTree(H_min);
+        cout << endl;
         consolidate();
     }
     H_no--;
@@ -200,7 +251,7 @@ NODE *search(NODE *t, int x)
     NODE *temp = t;
     if (temp == NULL)
     {
-        cout << "The heap is empty!!" << endl;
+        cout << "The heap is empty1!!" << endl;
     }
     do
     {
@@ -228,29 +279,7 @@ void dec_key(NODE *H_min, int x, int y)
 {
     NODE *t = search(H_min, x);
 }
-void printTree(NODE *t)
-{
-    if (t == NULL)
-    {
-        return;
-    }
 
-    NODE *temp = t;
-    do
-    {
-
-        cout << "-> " << temp->data;
-        if (temp->child != NULL)
-        {
-            cout << "( ";
-            printTree(temp->child);
-            cout << " )";
-        }
-
-        temp = temp->right;
-
-    } while (temp != NULL && temp != t);
-}
 void cut(NODE *x, NODE *y)
 {
     // removing node x from the parent y
@@ -310,7 +339,7 @@ void dec_key(int x, int k)
 }
 void delete_key(int x)
 {
-    dec_key(x, INT_MIN);
+    dec_key(x, -1);
     printTree(H_min);
     // Fib_heap_extract_min();
     return;
@@ -327,18 +356,33 @@ int main()
     // Fib_heap_print();
     printTree(H_min);
     cout << endl;
-    Fib_heap_find_min();
+    // Fib_heap_find_min();
     Fib_heap_extract_min();
     printTree(H_min);
     cout << endl;
     dec_key(34, 30);
-    printTree(H_min);
-    cout << endl;
-    delete_key(6);
+    //  printTree(H_min);
+    // Fib_heap_find_min();
+    // cout << endl;
+    // delete_key(6);
+    // printTree(H_min);
+    // cout << endl;
+    // Fib_heap_extract_min();
     printTree(H_min);
     cout << endl;
     Fib_heap_extract_min();
-
+    printTree(H_min);
+    cout << endl;
+    cout << H_min->data << endl;
+    // Fib_heap_extract_min();
+    // printTree(H_min);
+    // cout << endl;
+    // cout << "final";
+    // Fib_heap_extract_min();
+    // printTree(H_min);
+    // cout << endl;
+    // Fib_heap_find_min();
+    // cout<<endl;
     NODE *val = search(H_min, 25);
     if (val == NULL)
     {
@@ -348,6 +392,9 @@ int main()
     {
         cout << val->data << endl;
     }
+    Fib_heap_extract_min();
+    printTree(H_min);
+    cout << endl;
 
     return 0;
 }
