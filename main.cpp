@@ -239,16 +239,14 @@ NODE *search(NODE *t, int x)
     return NULL;
 }
 
-// decrease key function
-void dec_key(NODE *H_min, int x, int y)
-{
-    NODE *t = search(H_min, x);
-}
-
 void cut(NODE *x, NODE *y)
 {
+    if (x == x->right)
+        y->child = NULL;
     x->left->right = x->right;
     x->right->left = x->left;
+    if (x == y->child)
+        y->child = x->right;
     x->right = x->left = x;
     x->parent = NULL;
     y->degree = (y->degree) - 1;
@@ -308,8 +306,7 @@ void dec_key(int x, int k)
 }
 void delete_key(int x)
 {
-    dec_key(x, -1);
-    printTree(H_min);
+    dec_key(x, INT_MIN);
     Fib_heap_extract_min();
     return;
 }
@@ -332,7 +329,8 @@ int main()
         cout << "Enter 4 to decrease a key" << endl;
         cout << "Enter 5 to find the minimum" << endl;
         cout << "Enter 6 to search the tree" << endl;
-        cout << "Enter 7 to exit!!" << endl;
+        cout << "Enter 7 to insert a node"  <<endl;
+        cout << "Enter 8 to exit!!" << endl;
         cin >> t;
 
         switch (t)
@@ -378,7 +376,13 @@ int main()
         }
         break;
         case 7:
-            t = 0;
+           { cout<<"value of node you want to insert:" <<endl;
+            int val;
+            cin>>val;
+            Fib_heap_insert(get_list_node(val));}
+            break;
+        case 8:
+            t=0;
             break;
         default:
             break;
