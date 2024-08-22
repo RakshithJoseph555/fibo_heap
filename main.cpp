@@ -11,7 +11,6 @@ typedef struct node
     struct node *left;
     struct node *right;
     bool mark = false;
-    bool seen = false;
 
 } NODE;
 
@@ -28,27 +27,6 @@ NODE *get_list_node(int n)
     return p;
 }
 
-void Fib_heap_print()
-{
-    NODE *temp = H_min;
-    if (temp == NULL)
-    {
-        cout << "The heap is empty2!!!";
-    }
-    else
-    {
-        cout << "The root node list is: " << endl;
-        do
-        {
-            cout << temp->data << " ";
-            temp = temp->right;
-        } while (temp != H_min && temp != NULL);
-    }
-    cout << endl
-         << "Value of H_min is: " << H_min->data << endl;
-    return;
-}
-// linking same degree trees to nodes . here removing y from root list and making child of x
 void Fib_heap_link(NODE *y, NODE *x)
 {
     (y->left)->right = y->right;
@@ -96,6 +74,7 @@ void printTree(NODE *t)
 {
     if (t == NULL)
     {
+        cout << "The tree is empty" << endl;
         return;
     }
 
@@ -127,7 +106,6 @@ void Fib_heap_find_min()
 void consolidate()
 {
     int n = log(H_no) / log(2);
-    // cout<<n<<endl;
     NODE *a[n + 1];
     for (int i = 0; i <= n; i++)
     {
@@ -136,17 +114,12 @@ void consolidate()
     NODE *temp = H_min;
     NODE *temp1 = temp;
     temp = temp->right;
-    // while (temp != H_min)
     do
     {
-        // cout << "hi" << endl;
         int deg = temp1->degree;
-        // cout << "hi deg" << deg << endl;
         while (a[deg] != NULL)
         {
-            // cout << "hi1" << endl;
             NODE *temp2 = a[deg];
-            // cout << temp2->data << "temp 2 data" << endl;
             if (temp1->data > temp2->data)
             {
                 NODE *temp3 = temp1;
@@ -155,7 +128,6 @@ void consolidate()
             }
             if (temp2 == H_min)
             {
-                // cout << "jsjdhfkahaiufh" << endl;
                 H_min = temp2->right;
             }
 
@@ -209,9 +181,6 @@ NODE *Fib_heap_extract_min()
         H_min = NULL;
     else
     {
-        // cout << "start of extract min" << endl;
-        // printTree(H_min);
-        cout << endl;
         if (temp->child != NULL)
         {
             NODE *x = temp->child;
@@ -236,16 +205,12 @@ NODE *Fib_heap_extract_min()
         (temp->left)->right = temp->right;
         (temp->right)->left = temp->left;
         temp->child = NULL;
-        // cout << "consolidate called h_min is: " << H_min->data << endl;
-        // printTree(H_min);
-        cout << endl;
         consolidate();
     }
     H_no--;
     return temp;
 }
 
-// searching required element
 NODE *search(NODE *t, int x)
 {
     NODE *temp = t;
@@ -282,13 +247,11 @@ void dec_key(NODE *H_min, int x, int y)
 
 void cut(NODE *x, NODE *y)
 {
-    // removing node x from the parent y
     x->left->right = x->right;
     x->right->left = x->left;
     x->right = x->left = x;
     x->parent = NULL;
     y->degree = (y->degree) - 1;
-    // adding x to root list nodes
     x->right = H_min;
     x->left = H_min->left;
     H_min->left->right = x;
@@ -307,8 +270,10 @@ void cascading_cut(NODE *y)
         if (y->mark == false)
             y->mark = true;
         else
+        {
             cut(y, z);
-        cascading_cut(z);
+            cascading_cut(z);
+        }
     }
 }
 
@@ -318,7 +283,11 @@ void dec_key(int x, int k)
     NODE *t = NULL;
     t = search(H_min, x);
     if (t == NULL)
+    {
+
         cout << "node doesn't exist" << endl;
+        return;
+    }
 
     if (k > t->data)
     {
@@ -341,7 +310,7 @@ void delete_key(int x)
 {
     dec_key(x, -1);
     printTree(H_min);
-    // Fib_heap_extract_min();
+    Fib_heap_extract_min();
     return;
 }
 int main()
@@ -353,48 +322,67 @@ int main()
     {
         Fib_heap_insert(get_list_node(n));
     }
-    // Fib_heap_print();
-    printTree(H_min);
-    cout << endl;
-    // Fib_heap_find_min();
-    Fib_heap_extract_min();
-    printTree(H_min);
-    cout << endl;
-    dec_key(34, 30);
-    //  printTree(H_min);
-    // Fib_heap_find_min();
-    // cout << endl;
-    // delete_key(6);
-    // printTree(H_min);
-    // cout << endl;
-    // Fib_heap_extract_min();
-    printTree(H_min);
-    cout << endl;
-    Fib_heap_extract_min();
-    printTree(H_min);
-    cout << endl;
-    cout << H_min->data << endl;
-    // Fib_heap_extract_min();
-    // printTree(H_min);
-    // cout << endl;
-    // cout << "final";
-    // Fib_heap_extract_min();
-    // printTree(H_min);
-    // cout << endl;
-    // Fib_heap_find_min();
-    // cout<<endl;
-    NODE *val = search(H_min, 25);
-    if (val == NULL)
-    {
-        cout << "Not found" << endl;
-    }
-    else
-    {
-        cout << val->data << endl;
-    }
-    Fib_heap_extract_min();
-    printTree(H_min);
-    cout << endl;
 
+    int t = -1;
+    while (t != 0)
+    {
+        cout << "Enter 1 to print tree" << endl;
+        cout << "Enter 2 to perform extract min" << endl;
+        cout << "Enter 3 to delete a key" << endl;
+        cout << "Enter 4 to decrease a key" << endl;
+        cout << "Enter 5 to find the minimum" << endl;
+        cout << "Enter 6 to search the tree" << endl;
+        cout << "Enter 7 to exit!!" << endl;
+        cin >> t;
+
+        switch (t)
+        {
+        case 1:
+        {
+            printTree(H_min);
+            cout << endl;
+        }
+        break;
+        case 2:
+            Fib_heap_extract_min();
+            break;
+        case 3:
+        {
+            cout << "Enter the value of the node to be deleted" << endl;
+            int val;
+            cin >> val;
+            delete_key(val);
+        }
+        break;
+        case 4:
+        {
+            cout << "Enter the value of the node to decrease, and the new value" << endl;
+            int old_k, new_k;
+            cin >> old_k >> new_k;
+            dec_key(old_k, new_k);
+        }
+        break;
+        case 5:
+            Fib_heap_find_min();
+            break;
+        case 6:
+        {
+            int v;
+            cout << "Enter the value to be searched" << endl;
+            cin >> v;
+            NODE *temp = search(H_min, v);
+            if (temp == NULL)
+                cout << "Element not found!!" << endl;
+            else
+                cout << "Element present in the tree!!" << endl;
+        }
+        break;
+        case 7:
+            t = 0;
+            break;
+        default:
+            break;
+        }
+    }
     return 0;
 }
