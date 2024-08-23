@@ -17,7 +17,29 @@ typedef struct node
 NODE *H_min = NULL; // pointer to minimum element
 int H_no = 0;       // no. of nodes in fibonacci heaps
 
-NODE *get_list_node(int n)
+void Fib_heap_insert(NODE *x);
+//to insert a new node to fibonacci heaps and x is pointer to new node
+
+void Fib_heap_find_min();
+//to find minimum element element in fib_heaps ie. H_min
+
+NODE *Fib_heap_extract_min();
+//to delete minimum element from fib_heaps ie. H_min and returns pointer of deleted element
+
+void dec_key(int x, int k);
+//to decrease old key to new key ie. 'x' is old key and 'k' is new key
+
+void delete_key(int x);
+//delete any element from fib_heaps 'x' is key to be deleted
+
+void printTree(NODE *t);
+//print all nodes present in fib_heaps 't' is pointer to minimum element ie.H_min
+
+NODE *search(NODE *t, int x);
+//search required element in fiib_heaps ie.'x','t' is pointer to min element ie.H_min and return pointer to 'x'
+
+//dynamically allocates memory to NODE* and returns pointer to that node
+NODE *get_list_node(int n)   
 {
     NODE *p;
 
@@ -25,30 +47,6 @@ NODE *get_list_node(int n)
     p->data = n;
     p->left = p->right = p;
     return p;
-}
-
-void Fib_heap_link(NODE *y, NODE *x)
-{
-    (y->left)->right = y->right;
-    (y->right)->left = y->left;
-    // if (x->right == y)
-    // {
-    //     H_min = x;
-    // }
-    y->left = y->right = y;
-    y->parent = x;
-
-    if (x->child == NULL)
-        x->child = y;
-
-    y->right = x->child;
-    y->left = (x->child)->left;
-    ((x->child)->left)->right = y;
-    (x->child)->left = y;
-    if (y->data < ((x->child)->data))
-        x->child = y;
-    x->degree = x->degree + 1;
-    y->mark = false;
 }
 
 /*inserting a node into fibonacci heap*/
@@ -101,6 +99,30 @@ void Fib_heap_find_min()
         cout << "Minimum element present is:" << H_min->data << endl;
     else
         cout << "No element present" << endl;
+}
+
+void Fib_heap_link(NODE *y, NODE *x)
+{
+    (y->left)->right = y->right;
+    (y->right)->left = y->left;
+    // if (x->right == y)
+    // {
+    //     H_min = x;
+    // }
+    y->left = y->right = y;
+    y->parent = x;
+
+    if (x->child == NULL)
+        x->child = y;
+
+    y->right = x->child;
+    y->left = (x->child)->left;
+    ((x->child)->left)->right = y;
+    (x->child)->left = y;
+    if (y->data < ((x->child)->data))
+        x->child = y;
+    x->degree = x->degree + 1;
+    y->mark = false;
 }
 
 void consolidate()
@@ -304,10 +326,13 @@ void dec_key(int x, int k)
     if (t->data < H_min->data)
         H_min = t;
 }
+//delete key function
 void delete_key(int x)
 {
+    NODE* t;
     dec_key(x, INT_MIN);
-    Fib_heap_extract_min();
+    t=Fib_heap_extract_min();
+    free(t);
     return;
 }
 int main()
@@ -342,7 +367,9 @@ int main()
         }
         break;
         case 2:
-            Fib_heap_extract_min();
+            NODE* f;
+            f=Fib_heap_extract_min();
+            free(f);
             break;
         case 3:
         {
