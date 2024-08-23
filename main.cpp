@@ -191,7 +191,7 @@ void consolidate()
 NODE *Fib_heap_extract_min()
 {
     NODE *temp = H_min;
-    if (temp == NULL)
+    if (temp == NULL)      // heap is empty
     {
         cout << "The heap is empty3!!" << endl;
         return NULL;
@@ -199,11 +199,11 @@ NODE *Fib_heap_extract_min()
 
     NODE *y = temp;
 
-    if (temp == temp->right && temp->child == NULL)
+    if (temp == temp->right && temp->child == NULL)    //heap contains only one element
         H_min = NULL;
     else
     {
-        if (temp->child != NULL)
+        if (temp->child != NULL)       //one by one add all the children of minimum node to root list
         {
             NODE *x = temp->child;
             NODE *z = x;
@@ -215,19 +215,15 @@ NODE *Fib_heap_extract_min()
                 z->left = H_min->left;
 
                 H_min->left = z;
-                if (z->data < H_min->data)
-                {
-                    H_min = z;
-                }
                 z->parent = NULL;
                 z = y;
             } while (y != x);
         }
-        H_min = temp->right;
+        H_min = temp->right;            //updating H_min to next node in root list and removing all links of min element
         (temp->left)->right = temp->right;
         (temp->right)->left = temp->left;
         temp->child = NULL;
-        consolidate();
+        consolidate();                //call consolidate
     }
     H_no--;
     return temp;
@@ -332,9 +328,12 @@ void dec_key(int x, int k)
 void delete_key(int x)
 {
     NODE* t;
-    dec_key(x, INT_MIN);        //calling decrease key function with very very small value ie. H_min=INT_MIN
+    dec_key(x, INT_MIN);         //calling decrease key function with very very small value ie. H_min=INT_MIN
+    if(H_min->data==INT_MIN) 
+    {      
     t=Fib_heap_extract_min();     //calling extract min() will actually delete desired element 
     free(t);
+    }
     return;
 }
 int main()
