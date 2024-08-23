@@ -261,26 +261,28 @@ NODE *search(NODE *t, int x)
     return NULL;
 }
 
+/*'x' is child node of parent node 'y' 
+cut function cuts the link between 'x' and 'y' and adds 'x' to the root list*/
 void cut(NODE *x, NODE *y)
 {
-    if (x == x->right)
+    if (x == x->right)         //if parent has only one child than make parent->child=NULL
         y->child = NULL;
     x->left->right = x->right;
     x->right->left = x->left;
-    if (x == y->child)
+    if (x == y->child)        //if 'x' is not only in the child list of 'y' then make parent->child=x->right
         y->child = x->right;
     x->right = x->left = x;
-    x->parent = NULL;
-    y->degree = (y->degree) - 1;
-    x->right = H_min;
-    x->left = H_min->left;
+    x->parent = NULL;          //cut link between 'x' AND 'y'
+    y->degree = (y->degree) - 1;  //reduce degree of 'y' by 1
+    x->right = H_min;            
+    x->left = H_min->left;        //add 'x' to root list node
     H_min->left->right = x;
     H_min->left = x;
 
-    x->mark = false;
+    x->mark = false;          
 }
 
-// cascading cut function used in decrease key
+// cascading cut function used in decrease key ie. 'y' is parent node of updated key ie. 'x'
 void cascading_cut(NODE *y)
 {
     NODE *z;
@@ -291,7 +293,7 @@ void cascading_cut(NODE *y)
             y->mark = true;
         else
         {
-            cut(y, z);
+            cut(y, z);    //if previously any node was cut from child list of parent 'y' then that parent is cut and added to root list
             cascading_cut(z);
         }
     }
@@ -301,7 +303,7 @@ void cascading_cut(NODE *y)
 void dec_key(int x, int k)
 {
     NODE *t = NULL;
-    t = search(H_min, x);
+    t = search(H_min, x); //search for the node whose key want to decrease
     if (t == NULL)
     {
 
@@ -309,21 +311,21 @@ void dec_key(int x, int k)
         return;
     }
 
-    if (k > t->data)
+    if (k > t->data)    //if new key larger than old one then return
     {
         cout << "new key greater than older one" << endl;
         return;
     }
-    t->data = k;
+    t->data = k;  //update key to lesser
     NODE *y = NULL;
-    y = t->parent;
+    y = t->parent;      //mark a pointer to parent of updated key
 
-    if (y != NULL && t->data < y->data)
+    if (y != NULL && t->data < y->data)  //check whether updated value is lesser than parent
     {
-        cut(t, y);
-        cascading_cut(y);
+        cut(t, y);              //cut on updated node 
+        cascading_cut(y);      //cascade cut on parent of updated node
     }
-    if (t->data < H_min->data)
+    if (t->data < H_min->data)     //if updated key is less than H_min then update H_min pointer
         H_min = t;
 }
 //delete key function
