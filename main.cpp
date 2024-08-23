@@ -105,10 +105,7 @@ void Fib_heap_link(NODE *y, NODE *x)
 {
     (y->left)->right = y->right;
     (y->right)->left = y->left;
-    // if (x->right == y)
-    // {
-    //     H_min = x;
-    // }
+    
     y->left = y->right = y;
     y->parent = x;
 
@@ -277,9 +274,9 @@ void cut(NODE *x, NODE *y)
     x->right = H_min;            
     x->left = H_min->left;        //add 'x' to root list node
     H_min->left->right = x;
-    H_min->left = x;
+    H_min->left = x;            
 
-    x->mark = false;          
+    x->mark = false;          // clears x->mark and indicates that 'x' has been in the root list
 }
 
 // cascading cut function used in decrease key ie. 'y' is parent node of updated key ie. 'x'
