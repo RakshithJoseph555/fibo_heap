@@ -52,7 +52,7 @@ NODE *get_list_node(int n)
 /*inserting a node into fibonacci heap*/
 void Fib_heap_insert(NODE *x) // x is pointer to new node
 {
-    x->degree = 0;
+    x->degree = 0;          //initialize all parameters
     x->parent = NULL;
     x->child = NULL;
     if (H_min == NULL)
@@ -66,7 +66,7 @@ void Fib_heap_insert(NODE *x) // x is pointer to new node
         if (x->data < H_min->data)
             H_min = x;
     }
-    H_no = H_no + 1;
+    H_no = H_no + 1;     //increment total no. of node count 
 }
 void printTree(NODE *t)
 {
@@ -77,13 +77,13 @@ void printTree(NODE *t)
     }
 
     NODE *temp = t;
-    do
-    {
+    do          //printing tree recursively
+    {   
 
         cout << "-> " << temp->data;
         if (temp->child != NULL)
         {
-            cout << "( ";
+            cout << "( ";              //ie. x->(->y) represents y is child of y
             printTree(temp->child);
             cout << " )";
         }
@@ -101,6 +101,8 @@ void Fib_heap_find_min()
         cout << "No element present" << endl;
 }
 
+//link the nodes with same degree together ie. node y and node x have same degree
+//make node 'y' child of node 'x'
 void Fib_heap_link(NODE *y, NODE *x)
 {
     (y->left)->right = y->right;
@@ -109,7 +111,7 @@ void Fib_heap_link(NODE *y, NODE *x)
     y->left = y->right = y;
     y->parent = x;
 
-    if (x->child == NULL)
+    if (x->child == NULL)     //if x child list of x id empty then x->child=y
         x->child = y;
 
     y->right = x->child;
@@ -118,10 +120,11 @@ void Fib_heap_link(NODE *y, NODE *x)
     (x->child)->left = y;
     if (y->data < ((x->child)->data))
         x->child = y;
-    x->degree = x->degree + 1;
+    x->degree = x->degree + 1;     //increment degree of 'x'
     y->mark = false;
 }
 
+//no two nodes in root list should have same degree
 void consolidate()
 {
     int n = log(H_no) / log(2);
@@ -230,7 +233,7 @@ NODE *Fib_heap_extract_min()
     return temp;
 }
 
-NODE *search(NODE *t, int x)
+NODE *search(NODE *t, int x)     //searching for element recursively
 {
     NODE *temp = t;
     if (temp == NULL)
@@ -329,8 +332,8 @@ void dec_key(int x, int k)
 void delete_key(int x)
 {
     NODE* t;
-    dec_key(x, INT_MIN);
-    t=Fib_heap_extract_min();
+    dec_key(x, INT_MIN);        //calling decrease key function with very very small value ie. H_min=INT_MIN
+    t=Fib_heap_extract_min();     //calling extract min() will actually delete desired element 
     free(t);
     return;
 }
