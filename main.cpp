@@ -18,28 +18,28 @@ NODE *H_min = NULL; // pointer to minimum element
 int H_no = 0;       // no. of nodes in fibonacci heaps
 
 void Fib_heap_insert(NODE *x);
-//to insert a new node to fibonacci heaps and x is pointer to new node
+// to insert a new node to fibonacci heaps and x is pointer to new node
 
 void Fib_heap_find_min();
-//to find minimum element element in fib_heaps ie. H_min
+// to find minimum element element in fib_heaps ie. H_min
 
 NODE *Fib_heap_extract_min();
-//to delete minimum element from fib_heaps ie. H_min and returns pointer of deleted element
+// to delete minimum element from fib_heaps ie. H_min and returns pointer of deleted element
 
 void dec_key(int x, int k);
-//to decrease old key to new key ie. 'x' is old key and 'k' is new key
+// to decrease old key to new key ie. 'x' is old key and 'k' is new key
 
 void delete_key(int x);
-//delete any element from fib_heaps 'x' is key to be deleted
+// delete any element from fib_heaps 'x' is key to be deleted
 
 void printTree(NODE *t);
-//print all nodes present in fib_heaps 't' is pointer to minimum element ie.H_min
+// print all nodes present in fib_heaps 't' is pointer to minimum element ie.H_min
 
 NODE *search(NODE *t, int x);
-//search required element in fiib_heaps ie.'x','t' is pointer to min element ie.H_min and return pointer to 'x'
+// search required element in fiib_heaps ie.'x','t' is pointer to min element ie.H_min and return pointer to 'x'
 
-//dynamically allocates memory to NODE* and returns pointer to that node
-NODE *get_list_node(int n)   
+// dynamically allocates memory to NODE* and returns pointer to that node
+NODE *get_list_node(int n)
 {
     NODE *p;
 
@@ -52,7 +52,7 @@ NODE *get_list_node(int n)
 /*inserting a node into fibonacci heap*/
 void Fib_heap_insert(NODE *x) // x is pointer to new node
 {
-    x->degree = 0;          //initialize all parameters
+    x->degree = 0; // initialize all parameters
     x->parent = NULL;
     x->child = NULL;
     if (H_min == NULL)
@@ -66,7 +66,7 @@ void Fib_heap_insert(NODE *x) // x is pointer to new node
         if (x->data < H_min->data)
             H_min = x;
     }
-    H_no = H_no + 1;     //increment total no. of node count 
+    H_no = H_no + 1; // increment total no. of node count
 }
 void printTree(NODE *t)
 {
@@ -77,13 +77,13 @@ void printTree(NODE *t)
     }
 
     NODE *temp = t;
-    do          //printing tree recursively
-    {   
+    do // printing tree recursively
+    {
 
         cout << "-> " << temp->data;
         if (temp->child != NULL)
         {
-            cout << "( ";              //ie. x->(->y) represents y is child of y
+            cout << "( "; // ie. x->(->y) represents y is child of y
             printTree(temp->child);
             cout << " )";
         }
@@ -101,17 +101,17 @@ void Fib_heap_find_min()
         cout << "No element present" << endl;
 }
 
-//link the nodes with same degree together ie. node y and node x have same degree
-//make node 'y' child of node 'x'
+// link the nodes with same degree together ie. node y and node x have same degree
+// make node 'y' child of node 'x'
 void Fib_heap_link(NODE *y, NODE *x)
 {
     (y->left)->right = y->right;
     (y->right)->left = y->left;
-    
+
     y->left = y->right = y;
     y->parent = x;
 
-    if (x->child == NULL)     //if x child list of x id empty then x->child=y
+    if (x->child == NULL) // if x child list of x id empty then x->child=y
         x->child = y;
 
     y->right = x->child;
@@ -120,11 +120,11 @@ void Fib_heap_link(NODE *y, NODE *x)
     (x->child)->left = y;
     if (y->data < ((x->child)->data))
         x->child = y;
-    x->degree = x->degree + 1;     //increment degree of 'x'
+    x->degree = x->degree + 1; // increment degree of 'x'
     y->mark = false;
 }
 
-//no two nodes in root list should have same degree
+// no two nodes in root list should have same degree
 void consolidate()
 {
     int n = log(H_no) / log(2);
@@ -142,18 +142,18 @@ void consolidate()
         while (a[deg] != NULL)
         {
             NODE *temp2 = a[deg];
-            if (temp1->data > temp2->data)
+            if (temp1->data > temp2->data) // The node with the larger data value stays in the array, and then as the child
             {
                 NODE *temp3 = temp1;
                 temp1 = temp2;
                 temp2 = temp3;
             }
-            if (temp2 == H_min)
+            if (temp2 == H_min) // If the node in the array is the H_min, then we update the H-min to the next node
             {
                 H_min = temp2->right;
             }
 
-            if (temp2 == temp)
+            if (temp2 == temp) // IF the node already present is the loop controlling node, then we shift temp
                 temp = temp->right;
 
             Fib_heap_link(temp2, temp1);
@@ -165,7 +165,7 @@ void consolidate()
         temp = temp->right;
     } while (temp1 != H_min);
     H_min = NULL;
-    for (int i = 0; i <= n; i++)
+    for (int i = 0; i <= n; i++) // This loop is to upcate the new H_min
     {
         if (a[i] != NULL)
         {
@@ -191,19 +191,19 @@ void consolidate()
 NODE *Fib_heap_extract_min()
 {
     NODE *temp = H_min;
-    if (temp == NULL)      // heap is empty
+    if (temp == NULL) // heap is empty
     {
-        cout << "The heap is empty3!!" << endl;
+        cout << "The heap is empty!!" << endl;
         return NULL;
     }
 
     NODE *y = temp;
 
-    if (temp == temp->right && temp->child == NULL)    //heap contains only one element
+    if (temp == temp->right && temp->child == NULL) // heap contains only one element
         H_min = NULL;
     else
     {
-        if (temp->child != NULL)       //one by one add all the children of minimum node to root list
+        if (temp->child != NULL) // one by one add all the children of minimum node to root list
         {
             NODE *x = temp->child;
             NODE *z = x;
@@ -219,17 +219,17 @@ NODE *Fib_heap_extract_min()
                 z = y;
             } while (y != x);
         }
-        H_min = temp->right;            //updating H_min to next node in root list and removing all links of min element
+        H_min = temp->right; // updating H_min to next node in root list and removing all links of min element
         (temp->left)->right = temp->right;
         (temp->right)->left = temp->left;
         temp->child = NULL;
-        consolidate();                //call consolidate
+        consolidate(); // call consolidate
     }
     H_no--;
     return temp;
 }
 
-NODE *search(NODE *t, int x)     //searching for element recursively
+NODE *search(NODE *t, int x) // searching for element recursively
 {
     NODE *temp = t;
     if (temp == NULL)
@@ -257,25 +257,25 @@ NODE *search(NODE *t, int x)     //searching for element recursively
     return NULL;
 }
 
-/*'x' is child node of parent node 'y' 
+/*'x' is child node of parent node 'y'
 cut function cuts the link between 'x' and 'y' and adds 'x' to the root list*/
 void cut(NODE *x, NODE *y)
 {
-    if (x == x->right)         //if parent has only one child than make parent->child=NULL
+    if (x == x->right) // if parent has only one child than make parent->child=NULL
         y->child = NULL;
     x->left->right = x->right;
     x->right->left = x->left;
-    if (x == y->child)        //if 'x' is not only in the child list of 'y' then make parent->child=x->right
+    if (x == y->child) // if 'x' is not only in the child list of 'y' then make parent->child=x->right
         y->child = x->right;
     x->right = x->left = x;
-    x->parent = NULL;          //cut link between 'x' AND 'y'
-    y->degree = (y->degree) - 1;  //reduce degree of 'y' by 1
-    x->right = H_min;            
-    x->left = H_min->left;        //add 'x' to root list node
+    x->parent = NULL;            // cut link between 'x' AND 'y'
+    y->degree = (y->degree) - 1; // reduce degree of 'y' by 1
+    x->right = H_min;
+    x->left = H_min->left; // add 'x' to root list node
     H_min->left->right = x;
-    H_min->left = x;            
+    H_min->left = x;
 
-    x->mark = false;          // clears x->mark and indicates that 'x' has been in the root list
+    x->mark = false; // clears x->mark and indicates that 'x' has been in the root list
 }
 
 // cascading cut function used in decrease key ie. 'y' is parent node of updated key ie. 'x'
@@ -289,7 +289,7 @@ void cascading_cut(NODE *y)
             y->mark = true;
         else
         {
-            cut(y, z);    //if previously any node was cut from child list of parent 'y' then that parent is cut and added to root list
+            cut(y, z); // if previously any node was cut from child list of parent 'y' then that parent is cut and added to root list
             cascading_cut(z);
         }
     }
@@ -299,40 +299,40 @@ void cascading_cut(NODE *y)
 void dec_key(int x, int k)
 {
     NODE *t = NULL;
-    t = search(H_min, x); //search for the node whose key want to decrease
+    t = search(H_min, x); // search for the node whose key want to decrease
     if (t == NULL)
     {
 
-        cout << "node doesn't exist" << endl;
+        cout << "Node doesn't exist" << endl;
         return;
     }
 
-    if (k > t->data)    //if new key larger than old one then return
+    if (k > t->data) // if new key larger than old one then return
     {
-        cout << "new key greater than older one" << endl;
+        cout << "New key greater than older one" << endl;
         return;
     }
-    t->data = k;  //update key to lesser
+    t->data = k; // update key to lesser
     NODE *y = NULL;
-    y = t->parent;      //mark a pointer to parent of updated key
+    y = t->parent; // mark a pointer to parent of updated key
 
-    if (y != NULL && t->data < y->data)  //check whether updated value is lesser than parent
+    if (y != NULL && t->data < y->data) // check whether updated value is lesser than parent
     {
-        cut(t, y);              //cut on updated node 
-        cascading_cut(y);      //cascade cut on parent of updated node
+        cut(t, y);        // cut on updated node
+        cascading_cut(y); // cascade cut on parent of updated node
     }
-    if (t->data < H_min->data)     //if updated key is less than H_min then update H_min pointer
+    if (t->data < H_min->data) // if updated key is less than H_min then update H_min pointer
         H_min = t;
 }
-//delete key function
+// delete key function
 void delete_key(int x)
 {
-    NODE* t;
-    dec_key(x, INT_MIN);         //calling decrease key function with very very small value ie. H_min=INT_MIN
-    if(H_min->data==INT_MIN) 
-    {      
-    t=Fib_heap_extract_min();     //calling extract min() will actually delete desired element 
-    free(t);
+    NODE *t;
+    dec_key(x, INT_MIN); // calling decrease key function with very very small value ie. H_min=INT_MIN
+    if (H_min->data == INT_MIN)
+    {
+        t = Fib_heap_extract_min(); // calling extract min() will actually delete desired element
+        free(t);
     }
     return;
 }
@@ -355,7 +355,7 @@ int main()
         cout << "Enter 4 to decrease a key" << endl;
         cout << "Enter 5 to find the minimum" << endl;
         cout << "Enter 6 to search the tree" << endl;
-        cout << "Enter 7 to insert a node"  <<endl;
+        cout << "Enter 7 to insert a node" << endl;
         cout << "Enter 8 to exit!!" << endl;
         cin >> t;
 
@@ -368,8 +368,8 @@ int main()
         }
         break;
         case 2:
-            NODE* f;
-            f=Fib_heap_extract_min();
+            NODE *f;
+            f = Fib_heap_extract_min();
             free(f);
             break;
         case 3:
@@ -404,13 +404,15 @@ int main()
         }
         break;
         case 7:
-           { cout<<"value of node you want to insert:" <<endl;
+        {
+            cout << "value of node you want to insert:" << endl;
             int val;
-            cin>>val;
-            Fib_heap_insert(get_list_node(val));}
-            break;
+            cin >> val;
+            Fib_heap_insert(get_list_node(val));
+        }
+        break;
         case 8:
-            t=0;
+            t = 0;
             break;
         default:
             break;
